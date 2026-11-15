@@ -1,0 +1,13 @@
+# Build caches and binaries
+bin/
+obj/
+publish/
+ShareableBuild/
+dist/
+
+# Environment and secret files
+.env
+.env.*
+!.env.example
+*.user
+.vs/

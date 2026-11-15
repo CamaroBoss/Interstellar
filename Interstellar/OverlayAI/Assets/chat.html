@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<style>
+:root{color-scheme:dark;--ink:#eaf5ff;--muted:#8ea8bf;--cyan:#70e3e9;--blue:#75aef3;--line:rgba(132,190,220,.19);--glass:rgba(22,39,58,.68)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 12% 0%,rgba(47,118,151,.16),transparent 42%),radial-gradient(ellipse at 100% 40%,rgba(92,76,151,.13),transparent 45%),#0c1522;color:var(--ink);font:13px/1.58 "Segoe UI",system-ui,sans-serif}
+body{padding:13px 13px 20px;overflow-x:hidden}
+button{font:inherit}
+#log{min-height:100%;display:flex;flex-direction:column;gap:12px}
+.welcome{animation:rise .65s cubic-bezier(.2,.8,.2,1) both}
+.hero{position:relative;isolation:isolate;overflow:hidden;border:1px solid rgba(128,191,222,.24);border-radius:23px;padding:20px 19px 17px;background:linear-gradient(135deg,rgba(30,61,83,.91),rgba(22,32,58,.94) 57%,rgba(35,34,68,.9));box-shadow:0 15px 38px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08)}
+.hero:before{content:"";position:absolute;z-index:-1;width:220px;height:220px;right:-58px;top:-94px;border-radius:50%;background:rgba(77,209,220,.16);filter:blur(36px)}
+.hero:after{content:"";position:absolute;z-index:-1;width:160px;height:160px;left:-95px;bottom:-115px;border-radius:50%;background:rgba(109,129,240,.2);filter:blur(28px)}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.kicker{display:inline-flex;align-items:center;gap:7px;color:#a6e9ed;font-size:9px;letter-spacing:1.6px;font-weight:800}
+.dot{width:6px;height:6px;border-radius:50%;background:#7aefca;box-shadow:0 0 12px rgba(122,239,202,.7);animation:pulse 2s ease-in-out infinite}
+.local-pill{border:1px solid rgba(126,194,215,.22);border-radius:99px;padding:4px 9px;background:rgba(6,19,32,.28);color:#a5bdd1;font-size:9px;letter-spacing:.7px}
+.hero-body{display:grid;grid-template-columns:minmax(0,1fr) 145px;align-items:center;gap:8px;margin-top:14px}
+.hero h1{font-size:clamp(24px,6vw,32px);line-height:1.06;letter-spacing:-1.1px;margin:0 0 9px;font-weight:750;max-width:280px}
+.hero h1 span{background:linear-gradient(90deg,#a8f1ef,#8bbbf4 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-copy{color:#a4b9cc;font-size:11.5px;line-height:1.55;max-width:255px;margin:0}
+.hero-art-wrap{position:relative;width:140px;height:140px;justify-self:end;border-radius:23px;padding:4px;background:linear-gradient(145deg,rgba(141,239,239,.67),rgba(95,117,203,.15));box-shadow:0 10px 28px rgba(0,0,0,.3),0 0 30px rgba(76,190,217,.14)}
+.hero-art{width:100%;height:100%;display:block;object-fit:cover;border-radius:19px;animation:float 5.5s ease-in-out infinite;transition:opacity .25s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
+.hero-art.changing{opacity:.35;transform:scale(.94)}
+.hero-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+.cta,.ghost{border-radius:12px;padding:9px 12px;border:1px solid transparent;cursor:pointer;font-size:11px;font-weight:700;transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
+.cta{color:#081a29;background:linear-gradient(115deg,#a1f2e7,#69d4e3 57%,#82b8f3);box-shadow:0 5px 15px rgba(58,182,199,.17),inset 0 1px 0 rgba(255,255,255,.6)}
+.ghost{color:#cae0ef;background:rgba(9,22,37,.3);border-color:rgba(126,184,210,.2)}
+.cta:hover,.ghost:hover{transform:translateY(-2px)}
+.cta:hover{box-shadow:0 9px 22px rgba(58,182,199,.28)}
+.ghost:hover{background:rgba(75,117,145,.18);border-color:rgba(126,205,225,.42)}
+.hotkeys{display:flex;flex-wrap:wrap;gap:7px;margin:14px 1px 0}
+.key-hint{border:1px solid rgba(139,177,204,.15);border-radius:8px;padding:4px 7px;color:#819bb2;background:rgba(4,13,24,.17);font-size:9px}
+.key-hint b{color:#b7d7e9;font-weight:700}
+.gallery-head{display:flex;align-items:center;justify-content:space-between;margin:15px 2px 8px}
+.gallery-title{font-size:10px;letter-spacing:1.4px;font-weight:800;color:#a9c5db}
+.gallery-note{font-size:9px;color:#6f8aa3}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gallery-card{min-width:0;text-align:left;padding:6px;border-radius:15px;border:1px solid rgba(124,174,203,.17);background:linear-gradient(150deg,rgba(31,51,71,.76),rgba(15,27,42,.88));cursor:pointer;overflow:hidden;transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease,background .24s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.gallery-card:hover{transform:translateY(-3px);border-color:rgba(106,219,225,.5);box-shadow:0 9px 19px rgba(0,0,0,.2)}
+.gallery-card.active{border-color:rgba(109,227,230,.65);background:linear-gradient(150deg,rgba(35,82,97,.8),rgba(19,34,54,.95));box-shadow:0 0 0 1px rgba(109,227,230,.1),0 7px 18px rgba(0,0,0,.16)}
+.gallery-card img{width:100%;height:66px;display:block;object-fit:cover;border-radius:10px;background:#101722}
+.art-title{display:block;color:#d7eafa;font-size:10px;font-weight:700;margin:6px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.art-sub{display:block;color:#7792aa;font-size:9px;margin:1px 2px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.footnote{display:flex;align-items:center;gap:7px;color:#6e879c;font-size:9.5px;margin:12px 3px 0}
+.footnote .spark{color:#80cbd4;font-size:12px}
+.msg{max-width:100%;margin:0 0 2px;word-wrap:break-word;overflow-wrap:anywhere;animation:rise .28s ease both}
+.user{align-self:flex-end;max-width:87%;background:linear-gradient(135deg,rgba(46,76,111,.95),rgba(38,53,91,.97));border:1px solid rgba(125,169,218,.2);padding:9px 12px;border-radius:16px 16px 5px 16px;white-space:pre-wrap;box-shadow:0 6px 16px rgba(0,0,0,.13)}
+.user .attach{display:inline-flex;margin:0 6px 4px 0;padding:2px 7px;border-radius:7px;background:rgba(125,208,225,.14);color:#a6e9ed;font-size:9px;font-weight:700;letter-spacing:.5px}
+.bot{align-self:stretch;padding:1px 3px 5px;color:#dce9f4}
+.bot:before{content:"✦  INTERSTELLAR";display:block;color:#83dce1;font-size:9px;letter-spacing:1.25px;font-weight:800;margin:0 0 7px}
+.bot p{margin:0 0 9px}.bot h1,.bot h2,.bot h3,.bot h4{margin:13px 0 7px;font-size:15px;line-height:1.3;color:#f0f7ff}
+.bot ul,.bot ol{margin:0 0 9px;padding-left:21px}.bot li{margin:3px 0}.bot blockquote{margin:8px 0;padding:7px 11px;border-left:2px solid #61cbd8;color:#9cb6cc;background:rgba(30,57,77,.32);border-radius:0 9px 9px 0}
+.bot code{background:#1a2c40;color:#bce9f2;padding:1px 5px;border:1px solid rgba(127,181,210,.13);border-radius:5px;font:11px Consolas,monospace}
+.streaming:after{content:"▍";color:#7be3e4;animation:blink 1s steps(2) infinite}
+.code{margin:9px 0;border:1px solid rgba(121,176,210,.2);border-radius:12px;overflow:hidden;background:#0a111b;box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.code .bar{display:flex;justify-content:space-between;align-items:center;padding:6px 9px;background:linear-gradient(90deg,#17283b,#1b263b);color:#8faac0;font-size:10px;letter-spacing:.5px}
+.code button{background:rgba(100,148,179,.12);border:1px solid rgba(137,185,210,.2);color:#c5ddec;border-radius:7px;padding:2px 8px;font-size:10px;cursor:pointer;transition:background .2s ease}
+.code button:hover{background:rgba(100,188,203,.22)}
+.code pre{margin:0;padding:11px 12px;overflow-x:auto}.code pre code{background:none;border:0;padding:0;font:11px/1.55 Consolas,"Cascadia Mono",monospace;white-space:pre;color:#d0e4f3}
+.k{color:#c5a9ff}.s{color:#9ee6be}.n{color:#ffbe91}.c{color:#7891a6;font-style:italic}
+.err{color:#ffb0b6;background:rgba(83,31,47,.55);border:1px solid rgba(244,117,138,.3);border-radius:11px;padding:9px 11px;margin-top:7px;white-space:pre-wrap}
+::-webkit-scrollbar{width:7px;height:7px}::-webkit-scrollbar-thumb{background:rgba(117,157,185,.3);border-radius:99px}::-webkit-scrollbar-thumb:hover{background:rgba(117,195,205,.5)}
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 12px rgba(122,239,202,.65)}50%{opacity:.55;box-shadow:0 0 4px rgba(122,239,202,.25)}}
+@keyframes blink{50%{opacity:0}}
+@media(max-width:430px){body{padding:10px}.hero{padding:16px 14px}.hero-body{grid-template-columns:minmax(0,1fr) 112px}.hero-art-wrap{width:108px;height:108px}.hero h1{font-size:24px}.gallery{gap:6px}.gallery-card{padding:5px}.gallery-card img{height:54px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style></head>
+<body>
+<div id="log"></div>
+<template id="welcomeTemplate">
+  <section class="welcome">
+    <div class="hero">
+      <div class="hero-top"><div class="kicker"><span class="dot"></span> YOUR SPACE, YOUR SIGNAL</div><span class="local-pill">READY WHEN YOU ARE</span></div>
+      <div class="hero-body">
+        <div>
+          <h1>A little more space to <span>think bigger.</span></h1>
+          <p class="hero-copy">A focused AI companion that lives right above your workflow. Ask a question, explore an idea, or let it take a look at your screen.</p>
+        </div>
+        <div class="hero-art-wrap"><img id="heroArt" class="hero-art" src="{{ART_ORBIT}}" alt="Interstellar signal artwork"></div>
+      </div>
+      <div class="hero-actions">
+        <button class="cta" data-action="capture">◎ &nbsp; Analyze my screen</button>
+        <button class="ghost" data-action="focus">Start a conversation ↗</button>
+      </div>
+      <div class="hotkeys"><span class="key-hint"><b>Ctrl + Shift + S</b> &nbsp;screen clip</span><span class="key-hint"><b>Ctrl + Shift + Space</b> &nbsp;minimize / restore</span><span class="key-hint"><b>Enter</b> &nbsp;send</span></div>
+    </div>
+    <div class="gallery-head"><span class="gallery-title">THE INTERSTELLAR COLLECTION</span><span class="gallery-note">Tap an artwork to feature it</span></div>
+    <div class="gallery">
+      <button class="gallery-card" data-art="0" aria-label="Feature monochrome orbit artwork"><img src="{{ART_MONO}}" alt="Monochrome Interstellar N artwork"><span class="art-title">Orbit mark</span><span class="art-sub">Monochrome · cosmic</span></button>
+      <button class="gallery-card active" data-art="1" aria-label="Feature electric signal artwork"><img src="{{ART_ORBIT}}" alt="Electric blue Interstellar globe artwork"><span class="art-title">Signal sphere</span><span class="art-sub">Electric · dimensional</span></button>
+      <button class="gallery-card" data-art="2" aria-label="Feature retro reminder artwork"><img src="{{ART_POSTER}}" alt="Retro green grid reminder artwork"><span class="art-title">Keep going</span><span class="art-sub">Retro · neon grid</span></button>
+    </div>
+    <div class="footnote"><span class="spark">✧</span><span>Tip: press <b>Ctrl + Shift + S</b> to clip the screen into the active input.</span></div>
+  </section>
+</template>
+<script>
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const KW=new Set('abstract as async await break case catch class const continue def default del do elif else enum except export extends false final finally fn for from func function if impl import in interface is lambda let match new nil null package pass private protected public pub raise return self static struct super switch this throw true try type typeof use var void while with yield int long float double bool boolean char string str None True False'.split(' '));
+function hl(code){
+  const re=/(\/\/.*|#.*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)\b/g;
+  let out='',last=0,m;
+  while((m=re.exec(code))){out+=esc(code.slice(last,m.index));if(m[1])out+='<span class="c">'+esc(m[1])+'</span>';else if(m[2])out+='<span class="s">'+esc(m[2])+'</span>';else if(m[3])out+='<span class="n">'+m[3]+'</span>';else if(KW.has(m[4]))out+='<span class="k">'+m[4]+'</span>';else out+=esc(m[4]);last=re.lastIndex;}
+  return out+esc(code.slice(last));
+}
+function inline(t){t=esc(t);t=t.replace(/`([^`]+)`/g,'<code>$1</code>');t=t.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');t=t.replace(/(^|[^*])\*([^*\s][^*]*)\*/g,'$1<i>$2</i>');return t;}
+function block(text){
+  let html='',list=null,para=[],m;
+  const fp=()=>{if(para.length){html+='<p>'+inline(para.join(' '))+'</p>';para=[];}};
+  const fl=()=>{if(list){html+='</'+list+'>';list=null;}};
+  for(const ln of text.split('\n')){
+    if(!ln.trim()){fp();fl();continue;}
+    if((m=/^(#{1,4})\s+(.*)/.exec(ln))){fp();fl();const n=m[1].length;html+='<h'+n+'>'+inline(m[2])+'</h'+n+'>';continue;}
+    if((m=/^\s*([-*]|\d+\.)\s+(.*)/.exec(ln))){fp();const t=/\d/.test(m[1])?'ol':'ul';if(list!==t){fl();html+='<'+t+'>';list=t;}html+='<li>'+inline(m[2])+'</li>';continue;}
+    fl();para.push(ln.trim());
+  }
+  fp();fl();return html;
+}
+function render(md){
+  const parts=md.split(/(```[\s\S]*?(?:```|$))/g);let html='';
+  parts.forEach((seg,i)=>{if(i%2===0){html+=block(seg);return;}const m=/^```([\w+#.-]*)[^\S\n]*\n?([\s\S]*?)(?:```)?$/.exec(seg);const lang=m?m[1]:'',code=m?m[2]:seg;html+='<div class="code"><div class="bar"><span>'+esc(lang||'code')+'</span><button class="copy">Copy</button></div><pre><code>'+hl(code.replace(/\n$/,''))+'</code></pre></div>';});
+  return html;
+}
+const chat=(()=>{
+  const log=document.getElementById('log');let cur=null,buf='';
+  const near=()=>innerHeight+scrollY>=document.body.scrollHeight-80;
+  const down=()=>scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  const showWelcome=()=>{const t=document.getElementById('welcomeTemplate');log.replaceChildren(t.content.cloneNode(true));};
+  showWelcome();
+  log.addEventListener('click',e=>{
+    const card=e.target.closest('.gallery-card');
+    if(card){const index=Number(card.dataset.art);const images=['{{ART_MONO}}','{{ART_ORBIT}}','{{ART_POSTER}}'];const hero=document.getElementById('heroArt');if(hero&&images[index]){hero.classList.add('changing');setTimeout(()=>{hero.src=images[index];hero.classList.remove('changing');},130);}log.querySelectorAll('.gallery-card').forEach(c=>c.classList.toggle('active',c===card));return;}
+    const action=e.target.closest('[data-action]');if(action){chrome.webview.postMessage(JSON.stringify({type:action.dataset.action}));return;}
+    const copy=e.target.closest('button.copy');if(copy){const code=copy.closest('.code').querySelector('code').innerText;chrome.webview.postMessage(JSON.stringify({type:'copy',text:code}));copy.textContent='Copied';setTimeout(()=>copy.textContent='Copy',1200);}
+  });
+  return{
+    addUser(t,img){log.querySelector('.welcome')?.remove();const d=document.createElement('div');d.className='msg user';if(img){const a=document.createElement('span');a.className='attach';a.textContent='SCREEN CLIP';d.appendChild(a);}const text=document.createElement('span');text.textContent=t;d.appendChild(text);log.appendChild(d);down();},
+    startAssistant(){cur=document.createElement('div');cur.className='msg bot streaming';log.appendChild(cur);buf='';},
+    append(c){if(!cur)return;const s=near();buf+=c;cur.innerHTML=render(buf);if(s)down();},
+    finish(){if(cur){cur.classList.remove('streaming');cur=null;}},
+    error(m){if(!cur)this.startAssistant();const e=document.createElement('div');e.className='err';e.textContent=m;cur.appendChild(e);this.finish();down();},
+    clear(){log.innerHTML='';cur=null;buf='';showWelcome();}
+  };
+})();
+</script></body></html>
